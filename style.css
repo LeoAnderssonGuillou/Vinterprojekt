@@ -1,0 +1,22 @@
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+}
+
+#board {
+  margin-top: 40px;
+  width: 400px;
+  height: 400px;
+  background-color: white;
+}
+
+#board div {
+  background-color: lightgray;
+  border: 1px solid black;
+  text-align: center;
+}
