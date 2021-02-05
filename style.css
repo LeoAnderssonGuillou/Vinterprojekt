@@ -8,14 +8,16 @@ main {
   justify-content: center;
 }
 
-#board {
+.board {
   margin-top: 40px;
+  margin-right: 6%;
+  margin-left: 6%;
   width: 400px;
   height: 400px;
   background-color: white;
 }
 
-#board div {
+.board div {
   background-color: lightgray;
   border: 1px solid black;
   text-align: center;
