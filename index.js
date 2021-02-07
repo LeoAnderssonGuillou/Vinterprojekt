@@ -58,25 +58,24 @@ for (let y = 0; y < 10; y++) {
   }
 }
 
-
 function click(x, y) {
   if (gameState == 1) {
     switch (boatsPlaced) {
-      case 0: placeShip(x, y);
+      case 0: placeShip(grid1, x, y);
         break;
-      case 1: placeSub(x, y);
+      case 1: placeSub(grid1, x, y);
         break;
-      case 2: placeShip(x, y);
+      case 2: placeShip(grid1, x, y);
         break;
-      case 3: placeCarrier(x, y);
+      case 3: placeCarrier(grid1, x, y);
         break;
-      case 4: placeSub(x, y);
+      case 4: placeSub(grid1, x, y);
         gameState = 2;
+        placeOpponentBoats();
         break;
     }
   }
   if (gameState == 2) {
-
   }
 }
 
@@ -99,15 +98,42 @@ function hover(x, y, entering) {
   }
 }
 
-function placeShip(x, y) {
-  if (clickedCells.includes(grid1[x][y]) || clickedCells.includes(grid1[x][y + 1]) || clickedCells.includes(grid1[x][y - 1]) || y-1 < 0 || y+1 > 9) { }
+function placeOpponentBoats() {
+  let done = false;
+  let x = 0;
+  let y = 0;
+  boatsPlaced = 0;
+  while (done == false)
+  {
+    x = random(0, 10);
+    y = random(0, 10);
+    console.log(`${x}.${y}`);
+    switch (boatsPlaced) {
+      case 0: placeShip(grid2, x, y);
+        break;
+      case 1: placeSub(grid2, x, y);
+        break;
+      case 2: placeShip(grid2, x, y);
+        break;
+      case 3: placeCarrier(grid2, x, y);
+        break;
+      case 4: placeSub(grid2, x, y);
+        break;
+      case 5: done = true;
+        break;
+    }
+  }
+}
+
+function placeShip(grid, x, y) {
+  if (clickedCells.includes(grid[x][y]) || clickedCells.includes(grid[x][y + 1]) || clickedCells.includes(grid[x][y - 1]) || y-1 < 0 || y+1 > 9) { }
   else {
-    document.getElementById(grid1[x][y]).style.backgroundColor = ship;
-    clickedCells.push(grid1[x][y]);
-    document.getElementById(grid1[x][y + 1]).style.backgroundColor = ship;
-    clickedCells.push(grid1[x][y + 1]);
-    document.getElementById(grid1[x][y - 1]).style.backgroundColor = ship;
-    clickedCells.push(grid1[x][y - 1]);
+    document.getElementById(grid[x][y]).style.backgroundColor = ship;
+    clickedCells.push(grid[x][y]);
+    document.getElementById(grid[x][y + 1]).style.backgroundColor = ship;
+    clickedCells.push(grid[x][y + 1]);
+    document.getElementById(grid[x][y - 1]).style.backgroundColor = ship;
+    clickedCells.push(grid[x][y - 1]);
     boatsPlaced++;
   }
 }
@@ -120,15 +146,15 @@ function previewShip(x, y) {
   }
 }
 
-function placeSub(x, y) {
+function placeSub(grid, x, y) {
   if (x+1 < 10)
   {
-    if (clickedCells.includes(grid1[x][y]) || clickedCells.includes(grid1[x + 1][y]) || x-1 < 0 || x+1 > 9) { }
+    if (clickedCells.includes(grid[x][y]) || clickedCells.includes(grid[x + 1][y]) || x-1 < 0 || x+1 > 9) { }
     else {
-      document.getElementById(grid1[x][y]).style.backgroundColor = ship;
-      clickedCells.push(grid1[x][y]);
-      document.getElementById(grid1[x + 1][y]).style.backgroundColor = ship;
-      clickedCells.push(grid1[x + 1][y]);
+      document.getElementById(grid[x][y]).style.backgroundColor = ship;
+      clickedCells.push(grid[x][y]);
+      document.getElementById(grid[x + 1][y]).style.backgroundColor = ship;
+      clickedCells.push(grid[x + 1][y]);
       boatsPlaced++;
     }
   }
@@ -144,25 +170,25 @@ function previewSub(x, y) {
   }
 }
 
-function placeCarrier(x, y) {
-  if (x+2 < 10)
+function placeCarrier(grid, x, y) {
+  if (x+2 < 10 && x > 0)
   {
-    if (clickedCells.includes(grid1[x][y]) || clickedCells.includes(grid1[x + 1][y]) || clickedCells.includes(grid1[x + 2][y]) || clickedCells.includes(grid1[x - 1][y])) { }
+    if (clickedCells.includes(grid[x][y]) || clickedCells.includes(grid[x + 1][y]) || clickedCells.includes(grid[x + 2][y]) || clickedCells.includes(grid[x - 1][y])) { }
     else {
-      document.getElementById(grid1[x][y]).style.backgroundColor = ship;
-      clickedCells.push(grid1[x][y]);
-      document.getElementById(grid1[x + 1][y]).style.backgroundColor = ship;
-      clickedCells.push(grid1[x + 1][y]);
-      document.getElementById(grid1[x + 2][y]).style.backgroundColor = ship;
-      clickedCells.push(grid1[x + 2][y]);
-      document.getElementById(grid1[x - 1][y]).style.backgroundColor = ship;
-      clickedCells.push(grid1[x - 1][y]);
+      document.getElementById(grid[x][y]).style.backgroundColor = ship;
+      clickedCells.push(grid[x][y]);
+      document.getElementById(grid[x + 1][y]).style.backgroundColor = ship;
+      clickedCells.push(grid[x + 1][y]);
+      document.getElementById(grid[x + 2][y]).style.backgroundColor = ship;
+      clickedCells.push(grid[x + 2][y]);
+      document.getElementById(grid[x - 1][y]).style.backgroundColor = ship;
+      clickedCells.push(grid[x - 1][y]);
       boatsPlaced++;
     }
   }
 }
 function previewCarrier(x, y) {
-  if (x+2 < 10)
+  if (x+2 < 10 && x > 0)
   {
     if (clickedCells.includes(grid1[x][y]) || clickedCells.includes(grid1[x + 1][y]) || clickedCells.includes(grid1[x + 2][y]) || clickedCells.includes(grid1[x - 1][y])) { }
     else {
@@ -172,4 +198,9 @@ function previewCarrier(x, y) {
       document.getElementById(grid1[x - 1][y]).style.backgroundColor = col;
     }
   }
+}
+
+
+function random(min, max){
+  return Math.floor(Math.random() * (max - min)) + min;
 }
