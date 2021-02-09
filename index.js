@@ -3,11 +3,16 @@ console.log("Hello world!");
 let bg = "#4e4e52";
 let ship = "#e3e3e3";
 let preview = ship;
+let hitBoat = "red";
+let missBg = "black";
+let aimCell = "green";
 
 let grid1 = new Array(10).fill(0).map(_ => new Array(10).fill({}));
 let grid2 = new Array(10).fill(0).map(_ => new Array(10).fill({}));
 
 let clickedCells = [];
+let hitCells = [];
+let boatCellsHit = 0;
 let boatsPlaced = 0;
 let gameState = 1;
 let col = "";
@@ -15,6 +20,7 @@ let col = "";
 const board1 = document.querySelector("#board1");
 const board2 = document.querySelector("#board2");
 
+//Setup style for boards
 function boardSetup(board) {
   board.style.display = "grid";
   board.style.gridTemplateColumns = new Array(10)
@@ -25,6 +31,7 @@ function boardSetup(board) {
 boardSetup(board1);
 boardSetup(board2);
 
+//Create cells for board1
 for (let y = 0; y < 10; y++) {
   for (let x = 0; x < 10; x++) {
     const cell1 = document.createElement("div");
@@ -44,12 +51,19 @@ for (let y = 0; y < 10; y++) {
     cell1.innerHTML = `${x}.${y}`;
   }
 }
+//Create cells for board2
 for (let y = 0; y < 10; y++) {
   for (let x = 0; x < 10; x++) {
     const cell2 = document.createElement("div");
     board2.appendChild(cell2);
     cell2.addEventListener("click", () => {
-      click(x, y);
+      fire(x, y);
+    });
+    cell2.addEventListener("mouseenter", () => {
+      aim(x, y, true);
+    });
+    cell2.addEventListener("mouseleave", () => {
+      aim(x, y, false);
     });
 
     cell2.id = `${x}:${y}B`;
@@ -58,6 +72,7 @@ for (let y = 0; y < 10; y++) {
   }
 }
 
+//For placing player boats
 function click(x, y) {
   if (gameState == 1) {
     switch (boatsPlaced) {
@@ -71,11 +86,29 @@ function click(x, y) {
         break;
       case 4: placeSub(grid1, x, y);
         gameState = 2;
+        ship = "#6c6c70";
         placeOpponentBoats();
         break;
     }
   }
+}
+
+//For firing at opponent cell
+function fire(x, y) {
   if (gameState == 2) {
+    if (clickedCells.includes(grid2[x][y]) && !hitCells.includes(grid2[x][y]))
+    {
+      document.getElementById(grid2[x][y]).style.backgroundColor = hitBoat;
+      hitCells.push(grid2[x][y]);
+      boatCellsHit++;
+    }
+    else if (!hitCells.includes(grid2[x][y]))
+    {
+      document.getElementById(grid2[x][y]).style.backgroundColor = missBg;
+      hitCells.push(grid2[x][y]);
+    }
+    else
+    {}
   }
 }
 
@@ -95,6 +128,19 @@ function hover(x, y, entering) {
       case 4: previewSub(x, y, entering);
         break;
     }
+  }
+}
+
+function aim(x, y, entering) {
+  if (entering == true) { col = aimCell; }
+  else { col = bg; }
+  if (gameState == 2) {
+    if (!hitCells.includes(grid2[x][y]))
+    {
+      document.getElementById(grid2[x][y]).style.backgroundColor = col;
+    }
+    else
+    {}
   }
 }
 
