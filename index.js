@@ -1,10 +1,10 @@
 console.log("Hello world!");
 
-let bg = "#4e4e52";
+let bg = "#3d3d40";
 let ship = "#e3e3e3";
 let preview = ship;
-let hitBoat = "red";
-let missBg = "black";
+let hitBoat = "#b00000";
+let missBg = "#303033";
 let aimCell = "green";
 
 let grid1 = new Array(10).fill(0).map(_ => new Array(10).fill({}));
@@ -96,51 +96,141 @@ function click(x, y) {
 //For firing at opponent cell
 function fire(x, y) {
   if (gameState == 2) {
-    if (clickedCells.includes(grid2[x][y]) && !hitCells.includes(grid2[x][y]))
-    {
+    if (clickedCells.includes(grid2[x][y]) && !hitCells.includes(grid2[x][y])) {
       document.getElementById(grid2[x][y]).style.backgroundColor = hitBoat;
       hitCells.push(grid2[x][y]);
       boatCellsHit++;
+      opponentAttack();
     }
-    else if (!hitCells.includes(grid2[x][y]))
-    {
+    else if (!hitCells.includes(grid2[x][y])) {
       document.getElementById(grid2[x][y]).style.backgroundColor = missBg;
       hitCells.push(grid2[x][y]);
+      opponentAttack();
     }
-    else
-    {}
+    else { }
   }
 }
 
+let validHit = false;
+let baseHit = false;
+let playerBoatCellsHit = 0;
+let baseX = 0;
+let baseY = 0;
+let targetX = 0;
+let targetY = 0;
+let target = 0;
+let state = 0;
+let direction = 0;
+validTarget = false;
+
+function opponentAttack() {
+  validHit = false;
+  while (validHit == false)
+    {
+      switch (state) {
+        case 0:
+          baseX = random(0, 10);
+          baseY = random(0, 10);
+          opponentFire(baseX, baseY);
+          if (baseHit == true) { state++; }
+          break;
+        case 1:
+          validTarget = false;
+          while (validTarget == false) {
+            console.log("still false");
+            targetX = baseX;
+            targetY = baseY;
+            direction = random(1, 5);
+            if (direction == 1) {
+              targetY = baseY - 1;
+            }
+            else if (direction == 2) {
+              targetX = baseX + 1;
+            }
+            else if (direction == 3) {
+              targetY = baseY + 1;
+            }
+            else if (direction == 4) {
+              targetY = baseX - 1;
+            }
+            if (targetY < 10 && targetX < 10 && targetY  >= 0 && targetX >= 0) {
+              console.log("inside board");
+              //if (!hitCells.includes(grid1[targetX][targetY])) {
+                validTarget = true;
+                console.log("TRUE");
+              //}
+            }
+          }
+          baseHit = false;
+          opponentFire(targetX, targetY);
+          if (baseHit == true) {
+            baseX = targetX;
+            baseY = targetY;
+          }
+          break;
+        case 2:
+
+          break;
+        case 3:
+
+          break;
+        case 4:
+
+          break;
+      }
+  }
+}
+
+function opponentFire(x, y) {
+  if (clickedCells.includes(grid1[x][y]) && !hitCells.includes(grid1[x][y])) {
+    document.getElementById(grid1[x][y]).style.backgroundColor = hitBoat;
+    hitCells.push(grid1[x][y]);
+    playerBoatCellsHit++;
+    baseHit = true;
+    validHit = true;
+  }
+  else if (!hitCells.includes(grid1[x][y])) {
+    document.getElementById(grid1[x][y]).style.backgroundColor = missBg;
+    hitCells.push(grid1[x][y]);
+    validHit = true;
+  }
+  else { }
+}
+
+//Howering over a cell when placing boats
 function hover(x, y, entering) {
   if (entering == true) { col = preview; }
   else { col = bg; }
   if (gameState == 1) {
     switch (boatsPlaced) {
-      case 0: previewShip(x, y, entering);
+      case 0:
+        previewShip(x, y, entering);
         break;
-      case 1: previewSub(x, y, entering);
+      case 1:
+        previewSub(x, y, entering);
         break;
-      case 2: previewShip(x, y, entering);
+      case 2:
+        previewShip(x, y, entering);
         break;
-      case 3: previewCarrier(x, y, entering);
+      case 3:
+        previewCarrier(x, y, entering);
         break;
-      case 4: previewSub(x, y, entering);
+      case 4:
+        previewSub(x, y, entering);
         break;
     }
   }
 }
 
+//Howering over an opponent cell during player turn
 function aim(x, y, entering) {
   if (entering == true) { col = aimCell; }
   else { col = bg; }
   if (gameState == 2) {
-    if (!hitCells.includes(grid2[x][y]))
-    {
+    if (!hitCells.includes(grid2[x][y])) {
       document.getElementById(grid2[x][y]).style.backgroundColor = col;
     }
-    else
-    {}
+    else { }
   }
 }
 
@@ -149,8 +239,7 @@ function placeOpponentBoats() {
   let x = 0;
   let y = 0;
   boatsPlaced = 0;
-  while (done == false)
-  {
+  while (done == false) {
     x = random(0, 10);
     y = random(0, 10);
     console.log(`${x}.${y}`);
@@ -172,7 +261,7 @@ function placeOpponentBoats() {
 }
 
 function placeShip(grid, x, y) {
-  if (clickedCells.includes(grid[x][y]) || clickedCells.includes(grid[x][y + 1]) || clickedCells.includes(grid[x][y - 1]) || y-1 < 0 || y+1 > 9) { }
+  if (clickedCells.includes(grid[x][y]) || clickedCells.includes(grid[x][y + 1]) || clickedCells.includes(grid[x][y - 1]) || y - 1 < 0 || y + 1 > 9) { }
   else {
     document.getElementById(grid[x][y]).style.backgroundColor = ship;
     clickedCells.push(grid[x][y]);
@@ -184,7 +273,7 @@ function placeShip(grid, x, y) {
   }
 }
 function previewShip(x, y) {
-  if (clickedCells.includes(grid1[x][y]) || clickedCells.includes(grid1[x][y + 1]) || clickedCells.includes(grid1[x][y - 1]) || y-1 < 0 || y+1 > 9) { }
+  if (clickedCells.includes(grid1[x][y]) || clickedCells.includes(grid1[x][y + 1]) || clickedCells.includes(grid1[x][y - 1]) || y - 1 < 0 || y + 1 > 9) { }
   else {
     document.getElementById(grid1[x][y]).style.backgroundColor = col;
     document.getElementById(grid1[x][y + 1]).style.backgroundColor = col;
@@ -193,9 +282,8 @@ function previewShip(x, y) {
 }
 
 function placeSub(grid, x, y) {
-  if (x+1 < 10)
-  {
-    if (clickedCells.includes(grid[x][y]) || clickedCells.includes(grid[x + 1][y]) || x-1 < 0 || x+1 > 9) { }
+  if (x + 1 < 10) {
+    if (clickedCells.includes(grid[x][y]) || clickedCells.includes(grid[x + 1][y]) || x - 1 < 0 || x + 1 > 9) { }
     else {
       document.getElementById(grid[x][y]).style.backgroundColor = ship;
       clickedCells.push(grid[x][y]);
@@ -206,8 +294,7 @@ function placeSub(grid, x, y) {
   }
 }
 function previewSub(x, y) {
-  if (x+1 < 10)
-  {
+  if (x + 1 < 10) {
     if (clickedCells.includes(grid1[x][y]) || clickedCells.includes(grid1[x + 1][y])) { }
     else {
       document.getElementById(grid1[x][y]).style.backgroundColor = col;
@@ -217,8 +304,7 @@ function previewSub(x, y) {
 }
 
 function placeCarrier(grid, x, y) {
-  if (x+2 < 10 && x > 0)
-  {
+  if (x + 2 < 10 && x > 0) {
     if (clickedCells.includes(grid[x][y]) || clickedCells.includes(grid[x + 1][y]) || clickedCells.includes(grid[x + 2][y]) || clickedCells.includes(grid[x - 1][y])) { }
     else {
       document.getElementById(grid[x][y]).style.backgroundColor = ship;
@@ -234,8 +320,7 @@ function placeCarrier(grid, x, y) {
   }
 }
 function previewCarrier(x, y) {
-  if (x+2 < 10 && x > 0)
-  {
+  if (x + 2 < 10 && x > 0) {
     if (clickedCells.includes(grid1[x][y]) || clickedCells.includes(grid1[x + 1][y]) || clickedCells.includes(grid1[x + 2][y]) || clickedCells.includes(grid1[x - 1][y])) { }
     else {
       document.getElementById(grid1[x][y]).style.backgroundColor = col;
@@ -247,6 +332,6 @@ function previewCarrier(x, y) {
 }
 
 
-function random(min, max){
+function random(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }

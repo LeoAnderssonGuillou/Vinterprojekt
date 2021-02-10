@@ -16,8 +16,8 @@ main {
   margin-top: 40px;
   margin-right: 6%;
   margin-left: 6%;
-  width: 454px;
-  height: 454px;
+  width: 460px;
+  height: 460px;
   background-color: #910000;
   display: flex;
   justify-content: center;
@@ -35,12 +35,12 @@ main {
 }
 
 .board div {
-  background-color: #4e4e52;
-  border: 1px solid #910000;
+  background-color: #3d3d40;
+  border: 1px solid black;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 #board2 div {
-  border: 1px solid #00912b;
+  border: 1px solid black;
 }
