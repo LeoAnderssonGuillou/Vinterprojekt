@@ -121,7 +121,8 @@ let targetY = 0;
 let target = 0;
 let state = 0;
 let direction = 0;
-validTarget = false;
+let validTarget = false;
+let targetAttempt = 0;
 
 function opponentAttack() {
   validHit = false;
@@ -136,33 +137,44 @@ function opponentAttack() {
           break;
         case 1:
           validTarget = false;
+          targetAttempt = 0;
           while (validTarget == false) {
             console.log("still false");
             targetX = baseX;
             targetY = baseY;
-            direction = random(1, 5);
-            if (direction == 1) {
-              targetY = baseY - 1;
+
+            switch (targetAttempt) {
+              case 0:
+                targetY = baseY - 1;
+                break;
+              case 1:
+                targetX = baseX + 1;
+                break;
+              case 2:
+                targetY = baseY + 1;
+                break;
+              case 3:
+                targetY = baseX - 1;
+                break;
+              case 4:
+                validTarget = true;
+                state = 0;
+                break;
             }
-            else if (direction == 2) {
-              targetX = baseX + 1;
-            }
-            else if (direction == 3) {
-              targetY = baseY + 1;
-            }
-            else if (direction == 4) {
-              targetY = baseX - 1;
-            }
+
             if (targetY < 10 && targetX < 10 && targetY  >= 0 && targetX >= 0) {
               console.log("inside board");
-              //if (!hitCells.includes(grid1[targetX][targetY])) {
+              if (!hitCells.includes(grid1[targetX][targetY])) {
                 validTarget = true;
                 console.log("TRUE");
-              //}
+              }
             }
+            targetAttempt++;
           }
           baseHit = false;
-          opponentFire(targetX, targetY);
+          if (state == 1) {
+            opponentFire(targetX, targetY);
+          }
           if (baseHit == true) {
             baseX = targetX;
             baseY = targetY;
