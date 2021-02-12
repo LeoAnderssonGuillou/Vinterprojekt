@@ -130,128 +130,194 @@ let patternDirection = 0;
 let directionInverted = false;
 
 function opponentAttack() {
-  validHit = false;
-  while (validHit == false)
-    {
-      switch (state) {
-        //A random cell is selected. If it hits a boat, that cell is remembered as "base target" or baseX/baseY, and script moves on to state 1.
-        case 0:
+    switch (state) {
+      //A random cell is selected. If it hits a boat, that cell is remembered as "base target" or baseX/baseY, and script moves on to state 1.
+      case 0:
+        console.log("STATE 0 ENTERED");
+        validTarget = false;
+        while (validTarget == false) {
           baseX = random(0, 10);
           baseY = random(0, 10);
-          opponentFire(baseX, baseY);
-          if (baseHit == true) { state++; validTarget = false; }
-          directionInverted = false;
-          break;
-        //Opponent tries hitting surrounding cells. If another boat cell is hit, it becomes baseX2/baseY2 and the script moves on to state 2. If no valid cell can be hit, it returns to state 0.
-        case 1:
-          targetAttempt = 0;
-          validTarget = false;
-          while (validTarget == false) {
-            targetX = baseX;
-            targetY = baseY;
-            switch (targetAttempt) {
-              case 0:
-                targetY = baseY - 1;
-                break;
-              case 1:
-                targetX = baseX + 1;
-                break;
-              case 2:
-                targetY = baseY + 1;
-                break;
-              case 3:
-                targetY = baseX - 1;
-                break;
-              case 4:
-                validTarget = true;
-                state = 0;
-                break;
+          if (baseY < 10 && baseX < 10 && baseY  >= 0 && baseX >= 0) {
+            if (!hitCells.includes(grid1[baseX][baseY])) {
+              validTarget = true;
             }
-            if (targetY < 10 && targetX < 10 && targetY  >= 0 && targetX >= 0) {
-              console.log("inside board");
-              if (!hitCells.includes(grid1[targetX][targetY])) {
-                console.log("valid hit");
-                validTarget = true;
-              }
-            }
-            targetAttempt++;
           }
-          baseHit = false;
-          if (state == 1) {
-            opponentFire(targetX, targetY);
-          }
-          if (baseHit == true) {
-            console.log("BASE HIT");
-            baseX2 = targetX;
-            baseY2 = targetY;
-            patternDirection = targetAttempt - 1;
-            state = 2;
-          }
-          break;
-        //Now knowing the locations of at least two neighbouring cells (base & base2), the opponent can keep hitting the next cells on that axis. When it inevitably misses or calcualtes an invalid target, it hit base neighbours in the other direction until it must return to state 0.
-        case 2:
-          console.log("STATE 2 ENTERED");
-          validTarget = false;
-          targetX = baseX2;
-          targetY = baseY2;
-          switch (patternDirection) {
+        }
+        opponentFire(baseX, baseY);
+        if (baseHit == true) { state = 1; }
+        directionInverted = false;
+        break;
+      //Opponent tries hitting surrounding cells. If another boat cell is hit, it becomes baseX2/baseY2 and the script moves on to state 2. If no valid cell can be hit, it returns to state 0.
+      case 1:
+        console.log("STATE 1 ENTERED");
+        targetAttempt = 0;
+        validTarget = false;
+        while (validTarget == false) {
+          targetX = baseX;
+          targetY = baseY;
+          switch (targetAttempt) {
             case 0:
-              targetY = baseY2 - 1;
+              targetY = baseY - 1;
+              console.log("attempt 1");
               break;
             case 1:
-              targetX = baseX2 + 1;
+              targetX = baseX + 1;
+              console.log("attempt 2");
               break;
             case 2:
-              targetY = baseY2 + 1;
+              targetY = baseY + 1;
+              console.log("attempt 3");
               break;
             case 3:
-              targetY = baseX2 - 1;
+              targetX = baseX - 1;
+              console.log("attempt 4");
               break;
-            }
+            case 4:
+              console.log("give up");
+              validTarget = true;
+              state = 0;
+              break;
+          }
           if (targetY < 10 && targetX < 10 && targetY  >= 0 && targetX >= 0) {
-            console.log("new inside board");
             if (!hitCells.includes(grid1[targetX][targetY])) {
               validTarget = true;
-              console.log("new valid target");
             }
           }
-          if (validTarget == false) {
-            if (directionInverted = true) {
-              state = 0;
+          targetAttempt++;
+        }
+        baseHit = false;
+        if (state == 1) {
+          opponentFire(targetX, targetY);
+        }
+        if (baseHit == true) {
+          baseX2 = targetX;
+          baseY2 = targetY;
+          patternDirection = targetAttempt - 1;
+          state = 2;
+        }
+        break;
+      //Now knowing the locations of at least two neighbouring cells (base & base2), the opponent can keep hitting the next cells on that axis. When it inevitably misses or calcualtes an invalid target, it moves on to state 3.
+      case 2:
+        console.log("STATE 2 ENTERED");
+        validTarget = false;
+        targetX = baseX2;
+        targetY = baseY2;
+        switch (patternDirection) {
+          case 0:
+            targetY = baseY2 - 1;
+            break;
+          case 1:
+            targetX = baseX2 + 1;
+            break;
+          case 2:
+            targetY = baseY2 + 1;
+            break;
+          case 3:
+            targetX = baseX2 - 1;
+            break;
+          }
+        if (targetY < 10 && targetX < 10 && targetY  >= 0 && targetX >= 0) {
+          if (!hitCells.includes(grid1[targetX][targetY])) {
+            console.log("VALID");
+            validTarget = true;
+          }
+        }
+        if (validTarget == false) {
+          switch (patternDirection) {
+            case 0:
+              patternDirection = 2;
+              break;
+            case 1:
+              patternDirection = 3;
+              break;
+            case 2:
+              patternDirection = 0;
+              break;
+            case 3:
+              patternDirection = 1;
+              break;
             }
-            switch (patternDirection) {
-              case 0:
-                patternDirection = 2;
-                break;
-              case 1:
-                patternDirection = 3;
-                break;
-              case 2:
-                patternDirection = 0;
-                break;
-              case 3:
-                patternDirection = 1;
-                break;
-              }
-              baseX2 = baseX;
-              baseY2 = baseY;
-              directionInverted = true;
-              console.log("direction inverted");
-          }
-
-          baseHit = false;
-          if (validTarget == true) {
-            opponentFire(targetX, targetY);
-          }
-          if (baseHit == true) {
-            baseX2 = targetX;
-            baseY2 = targetY;
-            state = 2;
-          }
+            baseX2 = baseX;
+            baseY2 = baseY;
+            directionInverted = true;
+            state = 3;
+            console.log("DIRECTION INVERTED");
+            opponentAttackState3();
+            break;
+        }
+        baseHit = false;
+        if (validTarget == true) {
+          opponentFire(targetX, targetY);
+        }
+        if (baseHit == true) {
+          baseX2 = targetX;
+          baseY2 = targetY;
+          state = 2;
+        }
+        break;
+        //The opponent will now try to hit base neighbours in the other direction. When it once again misses or runs into an invalid target, it knows it must be done with this boat and returns to state 0.
+        case 3:
+          opponentAttackState3();
           break;
+    }
+}
+
+function opponentAttackState3() {
+  console.log("STATE 3 ENTERED");
+    validTarget = false;
+    targetX = baseX2;
+    targetY = baseY2;
+  switch (patternDirection) {
+    case 0:
+      targetY = baseY2 - 1;
+      break;
+    case 1:
+      targetX = baseX2 + 1;
+      break;
+    case 2:
+      targetY = baseY2 + 1;
+      break;
+    case 3:
+      targetX = baseX2 - 1;
+      break;
+    }
+  if (targetY < 10 && targetX < 10 && targetY  >= 0 && targetX >= 0) {
+    if (!hitCells.includes(grid1[targetX][targetY])) {
+      validTarget = true;
+      console.log("has an s3 shot");
+    }
+  }
+  if (validTarget == false) {
+    console.log("failure, reverting to monke");
+    while (validTarget == false) {
+      baseX = random(0, 10);
+      baseY = random(0, 10);
+      if (baseY < 10 && baseX < 10 && baseY  >= 0 && baseX >= 0) {
+        if (!hitCells.includes(grid1[baseX][baseY])) {
+          validTarget = true;
+          console.log("has a monke shot");
+        }
       }
+    }
+    console.log("firing monke shot");
+    opponentFire(baseX, baseY);
+    if (baseHit == true) { state = 1; }
+    else { state = 0; }
+    directionInverted = false;
+  }
+
+  baseHit = false;
+  if (state == 3) {
+    console.log("firing s3 shot");
+    opponentFire(targetX, targetY);
+  }
+  if (baseHit == true) {
+    baseX2 = targetX;
+    baseY2 = targetY;
   }
 }
+
 
 function opponentFire(x, y) {
   if (clickedCells.includes(grid1[x][y]) && !hitCells.includes(grid1[x][y])) {
@@ -266,7 +332,7 @@ function opponentFire(x, y) {
     hitCells.push(grid1[x][y]);
     validHit = true;
   }
-  else { }
+  else {console.log("what"); }
 }
 
 //Howering over a cell when placing boats
