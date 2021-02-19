@@ -5,7 +5,7 @@ let ship = "#e3e3e3";
 let preview = ship;
 let hitBoat = "#b00000";
 let missBg = "#303033";
-let aimCell = "lime";
+let aimCell = "red";
 
 let grid1 = new Array(10).fill(0).map(_ => new Array(10).fill({}));
 let grid2 = new Array(10).fill(0).map(_ => new Array(10).fill({}));
@@ -72,6 +72,8 @@ for (let y = 0; y < 10; y++) {
   }
 }
 
+//document.getElementById("board1").className = "board greenglow";
+
 //For placing player boats
 function click(x, y) {
   if (gameState == 1) {
@@ -85,9 +87,11 @@ function click(x, y) {
       case 3: placeCarrier(grid1, x, y);
         break;
       case 4: placeSub(grid1, x, y);
-        gameState = 2;
-        ship = "#6c6c70";
-        placeOpponentBoats();
+        if (boatsPlaced > 4) {
+          gameState = 2;
+          ship = "darkgray";
+          placeOpponentBoats();
+        } 
         break;
     }
   }
@@ -111,7 +115,8 @@ function fire(x, y) {
   }
 }
 
-let validHit = false;
+
+
 let baseHit = false;
 let playerBoatCellsHit = 0;
 
@@ -127,7 +132,6 @@ let direction = 0;
 let validTarget = false;
 let targetAttempt = 0;
 let patternDirection = 0;
-let directionInverted = false;
 
 function opponentAttack() {
     switch (state) {
@@ -146,7 +150,6 @@ function opponentAttack() {
         }
         opponentFire(baseX, baseY);
         if (baseHit == true) { state = 1; }
-        directionInverted = false;
         break;
       //Opponent tries hitting surrounding cells. If another boat cell is hit, it becomes baseX2/baseY2 and the script moves on to state 2. If no valid cell can be hit, it returns to state 0.
       case 1:
@@ -240,7 +243,6 @@ function opponentAttack() {
             }
             baseX2 = baseX;
             baseY2 = baseY;
-            directionInverted = true;
             state = 3;
             console.log("DIRECTION INVERTED");
             opponentAttackState3();
@@ -304,7 +306,6 @@ function opponentAttackState3() {
     opponentFire(baseX, baseY);
     if (baseHit == true) { state = 1; }
     else { state = 0; }
-    directionInverted = false;
   }
 
   baseHit = false;
@@ -325,12 +326,10 @@ function opponentFire(x, y) {
     hitCells.push(grid1[x][y]);
     playerBoatCellsHit++;
     baseHit = true;
-    validHit = true;
   }
   else if (!hitCells.includes(grid1[x][y])) {
     document.getElementById(grid1[x][y]).style.backgroundColor = missBg;
     hitCells.push(grid1[x][y]);
-    validHit = true;
   }
   else {console.log("what"); }
 }
