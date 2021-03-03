@@ -90,7 +90,7 @@ function click(x, y) {
       case 4: placeSub(grid1, x, y);
         if (boatsPlaced > 4) {
           gameState = 2;
-          ship = "darkgray";
+          ship = bg;
           placeOpponentBoats();
         } 
         break;
