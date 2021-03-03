@@ -20,6 +20,7 @@ main {
 
 .boardbox {
   margin: 0px;
+  margin-top: 20px;
   margin-right: 0px;
   width: min-content;
   height: min-content;
@@ -63,6 +64,7 @@ main {
   grid-column-start: 1;
   grid-column-end: 3;
   grid-row-start: 0;
+  margin-top: 60px;
 
   display: flex;
   justify-content: center;

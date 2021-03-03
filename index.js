@@ -16,6 +16,7 @@ let boatCellsHit = 0;
 let boatsPlaced = 0;
 let gameState = 1;
 let col = "";
+let hasShot = false;
 
 const board1 = document.querySelector("#board1");
 const board2 = document.querySelector("#board2");
@@ -72,7 +73,7 @@ for (let y = 0; y < 10; y++) {
   }
 }
 
-//document.getElementById("board1").className = "board greenglow";
+document.getElementById("board1").className = "board greenglow";
 
 //For placing player boats
 function click(x, y) {
@@ -112,6 +113,12 @@ function fire(x, y) {
       opponentAttack();
     }
     else { }
+    if (hasShot == false)
+    {
+      document.getElementById("board2").className = "board";
+      document.getElementById("actualtext").innerText = "";
+      hasShot = true;
+    }
   }
 }
 
@@ -263,6 +270,7 @@ function opponentAttack() {
           opponentAttackState3();
           break;
     }
+  checkIfWon();
 }
 
 function opponentAttackState3() {
@@ -316,6 +324,21 @@ function opponentAttackState3() {
   if (baseHit == true) {
     baseX2 = targetX;
     baseY2 = targetY;
+  }
+}
+
+function checkIfWon() {
+  if (boatCellsHit > 13 && playerBoatCellsHit > 13) {
+    document.getElementById("actualtext").innerText = "IT'S A TIE!";
+      gameState = 3;
+  }
+  else if (boatCellsHit > 13) {
+    document.getElementById("actualtext").innerText = "YOU WIN!";
+    gameState = 3;
+  }
+  else if (playerBoatCellsHit > 13) {
+    document.getElementById("actualtext").innerText = "YOU LOSE!";
+    gameState = 3;
   }
 }
 
@@ -392,6 +415,9 @@ function placeOpponentBoats() {
       case 4: placeSub(grid2, x, y);
         break;
       case 5: done = true;
+              document.getElementById("board1").className = "board";
+              document.getElementById("board2").className = "board redglow";
+              document.getElementById("actualtext").innerText = "FIRE!";
         break;
     }
   }
